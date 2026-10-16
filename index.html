@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trust Me Games</title>
+<style>
+:root{
+  --forest:#1F5130; --mint:#E9F4EC; --green:#2E8B57; --maria:#7B3FA0; --luana:#C8382E;
+  --gold:#F2B705; --teal:#1C7293; --orange:#F28C28; --ink:#1E2A22; --gray:#EEF0EF; --grayt:#9AA59E;
+  --head:"Century Schoolbook","Bookman Old Style",Georgia,serif;
+  --body:Calibri,"Segoe UI",Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:#fff;color:var(--ink);font-family:var(--body);overflow:hidden;user-select:none}
+button{font-family:inherit;cursor:pointer;border:none}
+.app{display:flex;flex-direction:column;height:100vh}
+.screen{flex:1;min-height:0;display:none;flex-direction:column}
+.screen.on{display:flex}
+
+/* ---------- HOME ---------- */
+.hero{background:var(--forest);color:#fff;padding:2.2vh 3vw;display:flex;align-items:center;gap:2vw}
+.hero .badge{width:7vh;height:7vh;border-radius:50%;background:var(--gold);display:grid;place-items:center;flex:none}
+.hero h1{font-family:var(--head);font-size:clamp(28px,4.6vh,60px);line-height:1}
+.hero p{color:var(--gold);font-size:clamp(14px,2.2vh,26px);margin-top:.6vh}
+.hero .tools{margin-left:auto;display:flex;gap:.8vw;flex-wrap:wrap;justify-content:flex-end}
+.tbtn{background:rgba(255,255,255,.14);color:#fff;border-radius:10px;padding:1vh 1.1vw;font-size:clamp(13px,1.9vh,22px);font-weight:700;display:flex;align-items:center;gap:.5vw}
+.tbtn:hover{background:rgba(255,255,255,.24)}
+.tbtn.gold{background:var(--gold);color:var(--forest)}
+.homebody{flex:1;min-height:0;padding:2.5vh 3vw;display:flex;flex-direction:column;gap:2vh}
+.pick{font-size:clamp(16px,2.6vh,30px);font-weight:700;color:var(--forest)}
+.grid{flex:1;min-height:0;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:1fr 1fr;gap:1.6vw}
+.act{border-radius:18px;padding:2.2vh 1.6vw;text-align:left;color:#fff;display:flex;flex-direction:column;gap:.8vh;box-shadow:0 3px 10px rgba(0,0,0,.14);transition:transform .15s}
+.act:hover{transform:translateY(-4px)}
+.act .num{width:6vh;height:6vh;border-radius:50%;background:rgba(255,255,255,.95);display:grid;place-items:center;font-family:var(--head);font-weight:700;font-size:clamp(18px,3.2vh,40px)}
+.act .stg{font-size:clamp(12px,1.8vh,20px);opacity:.9;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-top:auto}
+.act .name{font-family:var(--head);font-weight:700;font-size:clamp(20px,3.6vh,46px);line-height:1.05}
+.act .meta{font-size:clamp(13px,2vh,24px);opacity:.92}
+.settings{border-radius:18px;background:var(--mint);padding:2.2vh 1.6vw;display:flex;flex-direction:column;gap:1.4vh;justify-content:center}
+.settings h3{font-family:var(--head);color:var(--forest);font-size:clamp(18px,3vh,36px)}
+.srow{display:flex;align-items:center;gap:1vw;font-size:clamp(14px,2.3vh,28px);font-weight:700;color:var(--forest)}
+.step{width:5vh;height:5vh;border-radius:50%;background:var(--forest);color:#fff;font-size:clamp(16px,3vh,34px);font-weight:700}
+.rowsn{min-width:3vw;text-align:center;font-size:clamp(20px,4vh,48px)}
+.sbtn{background:#fff;color:var(--forest);border:2px solid var(--green);border-radius:10px;padding:.9vh 1vw;font-weight:700;font-size:clamp(13px,2vh,24px)}
+.keys{font-size:clamp(11px,1.6vh,18px);color:#4a5a50;line-height:1.4}
+
+/* ---------- GAME ---------- */
+.top{display:flex;align-items:center;gap:1.2vw;padding:1.6vh 2.5vw}
+.top h2{font-family:var(--head);color:var(--forest);font-size:clamp(22px,4.2vh,54px)}
+.top .count{font-size:clamp(14px,2.4vh,30px);font-weight:700;color:#fff;background:var(--teal);border-radius:999px;padding:.6vh 1.2vw}
+.top .sp{flex:1}
+.ib{height:6.4vh;min-width:6.4vh;border-radius:12px;background:var(--mint);color:var(--forest);font-weight:700;font-size:clamp(14px,2.4vh,28px);padding:0 1.1vw;display:flex;align-items:center;justify-content:center;gap:.5vw}
+.ib:hover{filter:brightness(.95)}
+.ib.show{background:var(--orange);color:#fff}
+.ib.rev{background:var(--forest);color:#fff}
+.ib:disabled{opacity:.35;cursor:default}
+.stage{flex:1;min-height:0;padding:0 2.5vw 2vh;display:flex;flex-direction:column;gap:2.4vh}
+.prompt{border-radius:18px;background:var(--mint);box-shadow:0 2px 8px rgba(0,0,0,.08);display:flex;align-items:center;gap:2vw;padding:2.4vh 2.2vw;min-height:20vh}
+.prompt .pi{width:12vh;height:12vh;border-radius:50%;flex:none;display:grid;place-items:center;color:#fff;font-weight:700;font-size:8vh;font-family:var(--head);transition:background .3s}
+.prompt .pt{font-weight:700;color:var(--forest);font-size:clamp(26px,6.4vh,84px);line-height:1.12}
+.prompt.center{justify-content:center;text-align:center}
+.prompt .qt{font-style:italic}
+.prompt .ask{font-size:clamp(14px,2.6vh,32px);color:var(--teal);font-weight:700;margin-bottom:.6vh}
+.opts{flex:1;min-height:0;display:grid;gap:1.6vw}
+.extra{min-height:5vh;text-align:center;font-weight:700;font-size:clamp(16px,3.2vh,40px);color:var(--orange);font-style:italic}
+
+/* chips */
+.opts.chips{grid-template-columns:repeat(4,1fr);grid-auto-rows:1fr}
+.chip{border-radius:16px;background:#fff;border:4px solid var(--green);color:var(--green);font-weight:700;font-size:clamp(20px,5.2vh,66px);transition:all .25s}
+.chip.col{border:none;color:#fff}
+/* abc */
+.card{border-radius:18px;background:var(--mint);box-shadow:0 2px 8px rgba(0,0,0,.1);text-align:left;padding:2.4vh 1.6vw;display:flex;flex-direction:column;gap:2vh;transition:all .25s;position:relative}
+.card .lt{width:9vh;height:9vh;border-radius:50%;background:var(--teal);color:#fff;font-weight:700;font-size:5.4vh;display:grid;place-items:center}
+.card .tx{font-weight:700;font-size:clamp(22px,5.4vh,70px);line-height:1.12;color:var(--ink)}
+/* ml */
+.opts.ml{grid-template-columns:1fr 1fr}
+.mlc{border-radius:18px;color:#fff;display:flex;align-items:center;gap:2vw;padding:0 3vw;box-shadow:0 2px 8px rgba(0,0,0,.14);transition:all .25s;position:relative}
+.mlc .big{font-family:var(--head);font-weight:700;font-size:clamp(50px,16vh,200px);line-height:1}
+.mlc .nm{font-weight:700;font-size:clamp(26px,7vh,90px)}
+.mlc.m{background:var(--maria)} .mlc.l{background:var(--luana)}
+.bothbtn{grid-column:1 / span 2;justify-self:center;background:var(--gold);color:var(--forest);font-weight:700;font-size:clamp(20px,4.4vh,56px);border-radius:999px;padding:1.2vh 4vw;box-shadow:0 2px 8px rgba(0,0,0,.14);transition:all .25s}
+.opts.ml.hasboth{grid-template-rows:1fr auto}
+
+/* states */
+.ok{background:var(--green)!important;color:#fff!important;border-color:var(--green)!important;transform:scale(1.03)}
+.ok .tx,.ok .lt{color:#fff!important}
+.ok .lt{background:rgba(255,255,255,.25)!important}
+.chip.ok,.bothbtn.ok{background:var(--gold)!important;color:var(--forest)!important;border-color:var(--gold)!important}
+.mlc.ok{transform:scale(1.03);box-shadow:0 0 0 6px var(--gold),0 4px 14px rgba(0,0,0,.2)}
+.mlc.ok.m{background:var(--maria)!important} .mlc.ok.l{background:var(--luana)!important}
+.dim{background:var(--gray)!important;color:var(--grayt)!important;border-color:var(--gray)!important;box-shadow:none!important}
+.dim .tx{color:var(--grayt)!important} .dim .lt{background:#D5DAD7!important}
+.no{animation:shake .45s}
+.tick{position:absolute;top:2vh;right:1.4vw;width:7vh;height:7vh;border-radius:50%;background:#fff;color:var(--green);display:grid;place-items:center;font-size:4.6vh;font-weight:700}
+.tickx{position:absolute;top:2vh;right:1.4vw;width:7vh;height:7vh;border-radius:50%;background:rgba(0,0,0,.08);color:var(--luana);display:grid;place-items:center;font-size:4.6vh;font-weight:700}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-14px)}40%{transform:translateX(14px)}60%{transform:translateX(-9px)}80%{transform:translateX(9px)}}
+
+/* done screen */
+.donebox{margin:auto;text-align:center;display:flex;flex-direction:column;gap:3vh;align-items:center}
+.donebox h3{font-family:var(--head);color:var(--forest);font-size:clamp(30px,8vh,100px)}
+.donebox p{font-size:clamp(16px,3vh,36px)}
+.bigbtn{background:var(--forest);color:#fff;border-radius:14px;padding:2vh 3vw;font-size:clamp(18px,3.4vh,42px);font-weight:700}
+.bigbtn.alt{background:var(--gold);color:var(--forest)}
+
+/* ---------- SCOREBOARD ---------- */
+.score{flex:none;background:var(--forest);display:flex;gap:.8vw;padding:1.2vh 1.4vw;align-items:stretch}
+.score .lab{color:var(--gold);font-weight:700;font-size:clamp(12px,2vh,24px);writing-mode:vertical-rl;transform:rotate(180deg);text-align:center}
+.team{flex:1;border-radius:12px;color:#fff;display:flex;align-items:center;justify-content:center;gap:1vw;padding:1vh .6vw;position:relative;transition:transform .15s}
+.team:active{transform:scale(.96)}
+.team .tn{font-weight:700;font-size:clamp(14px,2.4vh,30px)}
+.team .ts{font-family:var(--head);font-weight:700;font-size:clamp(26px,5.6vh,70px);line-height:1;min-width:2ch;text-align:center}
+.team .minus{position:absolute;top:.5vh;right:.5vh;width:3.4vh;height:3.4vh;border-radius:50%;background:rgba(0,0,0,.25);color:#fff;font-weight:700;font-size:2.4vh;line-height:1}
+.team .crown{position:absolute;top:.4vh;left:.8vh;font-size:2.6vh;color:var(--gold)}
+.team.bump{animation:bump .35s}
+@keyframes bump{50%{transform:scale(1.12)}}
+
+/* ---------- OVERLAYS ---------- */
+.ov{position:fixed;inset:0;background:rgba(31,81,48,.92);display:none;align-items:center;justify-content:center;z-index:50;flex-direction:column;gap:3vh}
+.ov.on{display:flex}
+.ov .cd{font-family:var(--head);font-weight:700;color:var(--gold);font-size:42vh;line-height:1;animation:pop .8s}
+.ov .cd.go{font-size:26vh;color:#fff}
+@keyframes pop{0%{transform:scale(.3);opacity:0}30%{transform:scale(1.1);opacity:1}100%{transform:scale(1)}}
+.ov h3{font-family:var(--head);color:#fff;font-size:clamp(30px,9vh,110px);text-align:center}
+.ov .wn{color:var(--gold);font-weight:700;font-size:clamp(24px,6vh,80px);text-align:center}
+.confetti{position:fixed;top:-3vh;width:1.4vh;height:2.2vh;z-index:60;pointer-events:none;border-radius:2px}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HOME -->
+  <section class="screen on" id="home">
+    <div class="hero">
+      <div class="badge"><svg width="60%" height="60%" viewBox="0 0 24 24" fill="#1F5130"><circle cx="8" cy="7" r="3.6"/><circle cx="16.5" cy="7.5" r="3"/><path d="M1.5 20c0-4 3-6.5 6.5-6.5s6.5 2.5 6.5 6.5z"/><path d="M14.5 20c0-2.2-.7-4-1.9-5.3.9-.6 2.2-1 3.9-1 3 0 6 2 6 6.3z"/></svg></div>
+      <div><h1>Trust Me</h1><p>Unit 3 · Reading a Story · Games</p></div>
+      <div class="tools">
+        <button class="tbtn gold" onclick="showWinner()">&#127942; Who's winning?</button>
+        <button class="tbtn" id="sndBtn" onclick="toggleSound()">&#128266; Sound on</button>
+        <button class="tbtn" onclick="toggleFS()">&#9974; Full screen</button>
+      </div>
+    </div>
+    <div class="homebody">
+      <div class="pick">Choose an activity:</div>
+      <div class="grid" id="actGrid"></div>
+    </div>
+  </section>
+
+  <!-- GAME -->
+  <section class="screen" id="game">
+    <div class="top">
+      <button class="ib" onclick="goHome()" title="Menu (Esc)">&#8962; Menu</button>
+      <h2 id="gTitle"></h2>
+      <span class="count" id="gCount"></span>
+      <span class="sp"></span>
+      <button class="ib show" onclick="countdown()" title="Space">3·2·1 Show!</button>
+      <button class="ib rev" id="revBtn" onclick="reveal()" title="R">Reveal</button>
+      <button class="ib" id="prevBtn" onclick="prev()" title="Left arrow">&#9664;</button>
+      <button class="ib" id="nextBtn" onclick="next()" title="Right arrow">&#9654;</button>
+    </div>
+    <div class="stage" id="stage"></div>
+  </section>
+
+  <!-- SCOREBOARD -->
+  <div class="score" id="score"></div>
+</div>
+
+<div class="ov" id="cdOv"></div>
+<div class="ov" id="winOv" onclick="this.classList.remove('on')"></div>
+
+<script>
+/* ================= DATA ================= */
+const BOOK = {toddlers:"#1C6FB8",capital:"#D93A26",entertaining:"#1A8F5E",trust:"#B52A70",genius:"#4F8A10"};
+const ACTS = [
+  {id:"adj", title:"Adjective Flash", stage:"1 · Warm Up", color:"#F28C28", type:"chips",
+   chips:["clever","friendly","kind","proud","grateful","nervous","lonely","polite"],
+   items:[
+    {p:"She thinks of other people.",a:"kind"},
+    {p:"She solves problems.",a:"clever"},
+    {p:"She wants to make new friends.",a:"friendly"},
+    {p:"She got an award.",a:"proud"},
+    {p:"He is worried before a test.",a:"nervous"},
+    {p:"He says “thank you” a lot.",a:"grateful"}]},
+  {id:"quick", title:"Quick Check: Say the Word!", stage:"3 · Words in Context", color:"#1C7293", type:"chips", colored:true,
+   chips:["toddlers","capital","entertaining","trust","genius"],
+   items:[
+    {p:"a very, very clever person",a:"genius",x:"page 53"},
+    {p:"small children, 1 to 3 years old",a:"toddlers",x:"page 48"},
+    {p:"fun and exciting, not boring",a:"entertaining",x:"page 50"},
+    {p:"the most important city of a country",a:"capital",x:"page 49"},
+    {p:"to believe in someone",a:"trust",x:"page 52"}]},
+  {id:"battle", title:"Row Battle", stage:"4 · Second Reading", color:"#2E8B57", type:"abc",
+   items:[
+    {p:"Why is Luana upset?",o:["Her dog is lost.","She did badly on the test.","She is sick."],a:1},
+    {p:"Where do the girls go?",o:["The Blue Waterfalls","The beach","Grandmother’s house"],a:0},
+    {p:"Did Luana really see a wolf?",o:["Yes","No"],a:1,x:"Bonus: Why not? She doesn’t know the fur color. It’s like Little Red Riding Hood!"},
+    {p:"Why can’t they run from the bear?",o:["Bears run faster.","It is raining.","Maria is tired."],a:0},
+    {p:"Are Maria and Luana very similar?",o:["Yes, they are the same.","No, they are very different."],a:1},
+    {p:"After the bear, are they still friends?",o:["No","Yes, best friends!"],a:1}]},
+  {id:"ml", title:"Maria or Luana?", stage:"5 · Comparing Characters", color:"#7B3FA0", type:"ml", both:true,
+   items:[
+    {p:"She’s a great student.",a:"M"},
+    {p:"She reads a storybook in class.",a:"L"},
+    {p:"She tells entertaining stories.",a:"L"},
+    {p:"She makes a promise.",a:"M"},
+    {p:"She knows what to do with a bear.",a:"L"},
+    {p:"She helps her best friend.",a:"B"}]},
+  {id:"said", title:"Who Said It?", stage:"6 · Cool Down", color:"#C8382E", type:"ml", quote:true,
+   items:[
+    {p:"So, what’s the capital of China?",a:"M",x:"page 49"},
+    {p:"Yippee!",a:"L",x:"page 50"},
+    {p:"Just lie down and don’t move. Trust me.",a:"L",x:"page 52"},
+    {p:"You’re a genius, Luana!",a:"M",x:"page 53"},
+    {p:"I owe you one.",a:"M",x:"page 53"},
+    {p:"Best friends always help each other.",a:"L",x:"page 53"}]}
+];
+const TEAMC = ["#1C7293","#7B3FA0","#C8382E","#F28C28","#2E8B57","#B52A70","#4F8A10","#5A6B8C"];
+
+/* ================= STATE ================= */
+const store = {
+  get(k,d){try{const v=localStorage.getItem("trustme_"+k);return v===null?d:JSON.parse(v)}catch(e){return d}},
+  set(k,v){try{localStorage.setItem("trustme_"+k,JSON.stringify(v))}catch(e){}}
+};
+let rows = store.get("rows",5);
+let scores = store.get("scores",[]);
+let sound = store.get("sound",true);
+let cur = {act:0,i:0,done:false};
+const st = {}; // st[actId][i] = {done:bool, wrong:[]}
+function S(){const a=ACTS[cur.act];st[a.id]=st[a.id]||{};return st[a.id][cur.i]=st[a.id][cur.i]||{done:false,wrong:[]}}
+
+/* ================= SOUND ================= */
+let ac=null;
+function tone(f,t0,dur,type="sine",vol=.25){
+  if(!sound)return;
+  try{
+    ac=ac||new (window.AudioContext||window.webkitAudioContext)();
+    const o=ac.createOscillator(),g=ac.createGain(),t=ac.currentTime+t0;
+    o.type=type;o.frequency.setValueAtTime(f,t);
+    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.02);g.gain.exponentialRampToValueAtTime(.001,t+dur);
+    o.connect(g).connect(ac.destination);o.start(t);o.stop(t+dur+.05);
+  }catch(e){}
+}
+const sfx={
+  right(){[523,659,784,1047].forEach((f,i)=>tone(f,i*.09,.3,"triangle"))},
+  wrong(){tone(180,0,.35,"sawtooth",.18);tone(140,.18,.4,"sawtooth",.18)},
+  beep(){tone(660,0,.18,"square",.15)},
+  go(){tone(988,0,.4,"square",.18);tone(1319,.08,.4,"triangle",.2)},
+  point(){tone(880,0,.12,"triangle");tone(1175,.08,.18,"triangle")},
+  minus(){tone(330,0,.15,"triangle")},
+  fanfare(){[523,659,784,1047,784,1047].forEach((f,i)=>tone(f,i*.14,i===5?.8:.25,"triangle",.28))},
+  click(){tone(520,0,.06,"sine",.12)}
+};
+function toggleSound(){sound=!sound;store.set("sound",sound);paintSound();if(sound)sfx.click()}
+function paintSound(){document.getElementById("sndBtn").innerHTML=sound?"&#128266; Sound on":"&#128263; Sound off"}
+
+/* ================= HOME ================= */
+function buildHome(){
+  const g=document.getElementById("actGrid");
+  g.innerHTML=ACTS.map((a,k)=>`
+    <button class="act" style="background:${a.color}" onclick="startAct(${k})">
+      <div class="num" style="color:${a.color}">${k+1}</div>
+      <div class="stg">${a.stage}</div>
+      <div class="name">${a.title}</div>
+      <div class="meta">${a.items.length} questions</div>
+    </button>`).join("")+`
+    <div class="settings">
+      <h3>Teams</h3>
+      <div class="srow">Rows:
+        <button class="step" onclick="setRows(-1)">&minus;</button>
+        <span class="rowsn" id="rowsN">${rows}</span>
+        <button class="step" onclick="setRows(1)">+</button></div>
+      <div class="srow"><button class="sbtn" onclick="resetScores()">Reset scores</button>
+        <button class="sbtn" onclick="resetAnswers()">Reset answers</button></div>
+      <div class="keys">Click a row's box to add a point (or press 1–8). &#8592; &#8594; or a presenter clicker change questions. Space = 3·2·1 Show! · R = reveal · Esc = menu</div>
+    </div>`;
+}
+function setRows(d){rows=Math.max(2,Math.min(8,rows+d));store.set("rows",rows);document.getElementById("rowsN").textContent=rows;paintScore();sfx.click()}
+function resetScores(){if(!confirm("Set all scores to 0?"))return;scores=[];store.set("scores",scores);paintScore()}
+function resetAnswers(){for(const k in st)delete st[k];sfx.click()}
+
+/* ================= SCOREBOARD ================= */
+function paintScore(bumpIdx){
+  while(scores.length<rows)scores.push(0);
+  const sc=scores.slice(0,rows),max=Math.max(...sc);
+  document.getElementById("score").innerHTML=`<div class="lab">SCORES</div>`+sc.map((v,i)=>`
+    <div class="team${i===bumpIdx?" bump":""}" style="background:${TEAMC[i]}" onclick="addPt(${i},1)" title="Click to add a point">
+      ${max>0&&v===max?'<span class="crown">&#9733;</span>':""}
+      <span class="tn">Row ${i+1}</span><span class="ts">${v}</span>
+      <button class="minus" onclick="event.stopPropagation();addPt(${i},-1)" title="Take away a point">&minus;</button>
+    </div>`).join("");
+}
+function addPt(i,d){
+  while(scores.length<rows)scores.push(0);
+  scores[i]=Math.max(0,scores[i]+d);store.set("scores",scores);
+  d>0?sfx.point():sfx.minus();paintScore(d>0?i:undefined);
+}
+function showWinner(){
+  while(scores.length<rows)scores.push(0);
+  const sc=scores.slice(0,rows),max=Math.max(...sc);
+  const ov=document.getElementById("winOv");
+  if(max===0){ov.innerHTML=`<h3>No points yet!</h3><div class="wn">Let's play!</div>`}
+  else{
+    const w=sc.map((v,i)=>v===max?"Row "+(i+1):null).filter(Boolean);
+    ov.innerHTML=`<div style="font-size:18vh">&#127942;</div><h3>${w.length>1?"It's a tie!":"The winner is…"}</h3><div class="wn">${w.join(" & ")} · ${max} points</div>`;
+    sfx.fanfare();confetti(90);
+  }
+  ov.classList.add("on");
+}
+
+/* ================= GAME ================= */
+function show(id){document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("on",s.id===id))}
+function goHome(){cur.done=false;show("home")}
+function startAct(k){cur={act:k,i:0,done:false};show("game");render();sfx.click()}
+function next(){const a=ACTS[cur.act];if(cur.done){if(cur.act<ACTS.length-1)startAct(cur.act+1);return}
+  if(cur.i<a.items.length-1){cur.i++;render()}else{cur.done=true;render()}sfx.click()}
+function prev(){if(cur.done){cur.done=false;render();return}if(cur.i>0){cur.i--;render();sfx.click()}}
+
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;")}
+function render(){
+  const a=ACTS[cur.act],stg=document.getElementById("stage");
+  document.getElementById("gTitle").textContent=a.title;
+  document.getElementById("gTitle").style.color=a.color==="#F28C28"?"#1F5130":a.color;
+  document.getElementById("prevBtn").disabled=!cur.done&&cur.i===0;
+  if(cur.done){
+    document.getElementById("gCount").textContent="Finished!";
+    document.getElementById("revBtn").disabled=true;
+    const nx=ACTS[cur.act+1];
+    stg.innerHTML=`<div class="donebox"><div style="font-size:14vh">&#11088;</div><h3>Great job!</h3><p>${a.title} is finished.</p>
+      <div style="display:flex;gap:2vw"><button class="bigbtn" onclick="goHome()">&#8962; Menu</button>
+      ${nx?`<button class="bigbtn alt" onclick="startAct(${cur.act+1})">Next: ${nx.title} &#9654;</button>`:`<button class="bigbtn alt" onclick="showWinner()">&#127942; Who wins?</button>`}</div></div>`;
+    return;
+  }
+  const it=a.items[cur.i],s=S();
+  document.getElementById("gCount").textContent=`${cur.i+1} of ${a.items.length}`;
+  document.getElementById("revBtn").disabled=s.done;
+
+  let prompt="",opts="";
+  if(a.id==="adj"){
+    prompt=`<div class="prompt"><div class="pi" style="background:${s.done?"var(--green)":"var(--orange)"}">?</div><div class="pt">${esc(it.p)}</div></div>`;
+  }else if(a.id==="quick"){
+    prompt=`<div class="prompt"><div class="pi" style="background:var(--teal);font-family:var(--body)">${cur.i+1}</div><div><div class="ask">Which word means…</div><div class="pt">${esc(it.p)}</div></div></div>`;
+  }else if(a.type==="abc"){
+    prompt=`<div class="prompt" style="min-height:14vh"><div class="pt">${esc(it.p)}</div></div>`;
+  }else if(a.quote){
+    prompt=`<div class="prompt"><div class="pi" style="background:transparent;color:var(--orange);font-size:16vh;width:9vh">&ldquo;</div><div class="pt qt">“${esc(it.p)}”</div></div>`;
+  }else{
+    prompt=`<div class="prompt center"><div class="pt">${esc(it.p)}</div></div>`;
+  }
+
+  if(a.type==="chips"){
+    opts=`<div class="opts chips" style="grid-template-columns:repeat(${a.chips.length===5?5:4},1fr)">`+a.chips.map((c,k)=>{
+      let cls="chip"+(a.colored?" col":""),style=a.colored?`background:${BOOK[c]}`:"";
+      if(s.done){cls+=c===it.a?" ok":" dim"}else if(s.wrong.includes(k))cls+=" dim";
+      return `<button class="${cls}" style="${style}" onclick="pick(${k})">${c}</button>`}).join("")+`</div>`;
+  }else if(a.type==="abc"){
+    opts=`<div class="opts" style="grid-template-columns:repeat(${it.o.length},1fr)">`+it.o.map((o,k)=>{
+      let cls="card",mark="";
+      if(s.done){if(k===it.a){cls+=" ok";mark='<span class="tick">&#10003;</span>'}else cls+=" dim"}
+      else if(s.wrong.includes(k)){cls+=" dim";mark='<span class="tickx">&#10007;</span>'}
+      return `<button class="${cls}" onclick="pick(${k})"><span class="lt">${"ABC"[k]}</span><span class="tx">${esc(o)}</span>${mark}</button>`}).join("")+`</div>`;
+  }else{
+    const keys=["M","L"];
+    opts=`<div class="opts ml${a.both?" hasboth":""}">`+keys.map((key,k)=>{
+      let cls="mlc "+key.toLowerCase(),mark="";
+      const right=it.a===key||it.a==="B";
+      if(s.done){if(right){cls+=" ok";mark='<span class="tick">&#10003;</span>'}else cls+=" dim"}
+      else if(s.wrong.includes(k)){cls+=" dim";mark='<span class="tickx">&#10007;</span>'}
+      return `<button class="${cls}" onclick="pick(${k})"><span class="big">${key}</span><span class="nm">${key==="M"?"Maria":"Luana"}</span>${mark}</button>`}).join("");
+    if(a.both){
+      let cls="bothbtn";
+      if(s.done)cls+=it.a==="B"?" ok":" dim";else if(s.wrong.includes(2))cls+=" dim";
+      opts+=`<button class="${cls}" onclick="pick(2)">BOTH!</button>`;
+    }
+    opts+=`</div>`;
+  }
+  const extra=s.done&&it.x?esc(it.x):"";
+  stg.innerHTML=prompt+opts+`<div class="extra">${extra}</div>`;
+}
+
+function isRight(a,it,k){
+  if(a.type==="chips")return a.chips[k]===it.a;
+  if(a.type==="abc")return k===it.a;
+  if(k===2)return it.a==="B";
+  return it.a===["M","L"][k];
+}
+function pick(k){
+  const a=ACTS[cur.act],it=a.items[cur.i],s=S();
+  if(s.done||s.wrong.includes(k))return;
+  if(isRight(a,it,k)){s.done=true;sfx.right();render();confetti(45)}
+  else{
+    s.wrong.push(k);sfx.wrong();
+    const el=document.querySelectorAll("#stage .opts > button")[k];
+    if(el){el.classList.add("no");setTimeout(render,450)}else render();
+  }
+}
+function reveal(){const s=S();if(cur.done||s.done)return;s.done=true;sfx.right();render()}
+
+/* ================= COUNTDOWN ================= */
+let cdBusy=false;
+function countdown(){
+  if(cdBusy)return;cdBusy=true;
+  const ov=document.getElementById("cdOv");ov.classList.add("on");
+  const seq=["3","2","1","SHOW!"];let i=0;
+  (function step(){
+    if(i===seq.length){ov.classList.remove("on");cdBusy=false;return}
+    ov.innerHTML=`<div class="cd${i===3?" go":""}">${seq[i]}</div>`;
+    i===3?sfx.go():sfx.beep();
+    i++;setTimeout(step,i===4?1100:850);
+  })();
+}
+
+/* ================= CONFETTI ================= */
+function confetti(n){
+  const cols=["#F2B705","#7B3FA0","#C8382E","#2E8B57","#1C7293","#F28C28"];
+  for(let i=0;i<n;i++){
+    const d=document.createElement("div");d.className="confetti";
+    d.style.left=Math.random()*100+"vw";d.style.background=cols[i%cols.length];
+    document.body.appendChild(d);
+    const dur=1400+Math.random()*1400,dx=(Math.random()-.5)*30,rot=Math.random()*720;
+    d.animate([{transform:"translate(0,0) rotate(0)"},{transform:`translate(${dx}vw,110vh) rotate(${rot}deg)`}],{duration:dur,easing:"cubic-bezier(.3,.6,.6,1)",delay:Math.random()*300}).onfinish=()=>d.remove();
+  }
+}
+
+/* ================= FULLSCREEN + KEYS ================= */
+function toggleFS(){try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}catch(e){}}
+document.addEventListener("keydown",e=>{
+  const inGame=document.getElementById("game").classList.contains("on");
+  const ovs=document.querySelectorAll(".ov.on");
+  if(e.key==="Escape"){if(ovs.length){ovs.forEach(o=>o.classList.remove("on"));return}goHome();return}
+  if(/^[1-8]$/.test(e.key)&&+e.key<=rows){addPt(+e.key-1,1);return}
+  if(!inGame)return;
+  if(["ArrowRight","PageDown"].includes(e.key)){e.preventDefault();next()}
+  else if(["ArrowLeft","PageUp"].includes(e.key)){e.preventDefault();prev()}
+  else if(e.key===" "){e.preventDefault();countdown()}
+  else if(e.key.toLowerCase()==="r")reveal();
+});
+
+buildHome();paintScore();paintSound();
+</script>
+</body>
+</html>
